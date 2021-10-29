@@ -13,8 +13,8 @@ echo '...............'
 
 # send 你的私钥密码
 /usr/bin/expect <<-EOF
-spawn ssh-add  /home/aqumik/duweizhi
-expect "Enter passphrase for /home/aqumik/duweizhi:"
+spawn ssh-add  /home/aqumik/zhi
+expect "Enter passphrase for /home/aqumik/zhi:"
 send "cde3\r"
 interact
 expect eof
