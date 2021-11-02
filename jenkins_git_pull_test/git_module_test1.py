@@ -13,4 +13,4 @@ def system_type():
         print('Other System')
 
 
-system_type()
+
