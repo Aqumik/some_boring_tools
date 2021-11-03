@@ -1,3 +1,6 @@
+# -*- coding:UTF-8 -*-
+
+import platform
 import os
 import platform
 from time import sleep
@@ -137,6 +140,10 @@ def hash_check():
     # print(remote_branch)
     local_commit_hash = repo.rev_parse(local_branch)
     remote_commit_hash = repo.rev_parse(remote_branch)
+
+
+
+
     #更新指定的远程分支库
 
     print('-----------更新前远程库hash')
@@ -144,11 +151,17 @@ def hash_check():
     print(remote_commit_hash)
     remote_fetch = repo.remotes.origin
     remote_fetch.fetch('main')
+
     print('-----------更新后远程库hash')
     print(repo.rev_parse(local_branch))
     print(repo.rev_parse(remote_branch))
 
-    print('-----------')
+    bra = repo.active_branch
+    print('当前分支',bra)
+
+
+    # remote_fetch.pull()
+
 
 
     print(repo.rev_parse('origin/main'))
