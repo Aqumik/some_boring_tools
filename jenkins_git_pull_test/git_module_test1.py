@@ -62,6 +62,10 @@ def branch_test():
     print(repo)
     print('当前分支',bra)
 
+    #似乎也能拉取当前分支的代码到本地
+    remote_fetch = repo.remotes.origin
+    remote_fetch.pull()
+
 
     #查看当前本地的所有分支
     all_branch = repo.branches
@@ -133,47 +137,62 @@ def branch_test():
 
 
 def hash_check():
-    local_branch = 'main'
+    #第一次Hash，即hash_1，在未拉取前；第二次Hash，即hash_2，拉取后
+    local_branch = 't1'
     repo = git.Repo(file_path1)
     repo_name = 'origin'
     remote_branch = repo_name + '/' +local_branch
+    repo.git.checkout(local_branch)
+    print('切换分支到%s'%local_branch)
+
     # print(remote_branch)
+
     local_commit_hash = repo.rev_parse(local_branch)
-    remote_commit_hash = repo.rev_parse(remote_branch)
-
-
-
+    remote_commit_hash_1 = repo.rev_parse(remote_branch)
 
     #更新指定的远程分支库
-
-    print('-----------更新前远程库hash')
+    print('-----------更新前远程的%s库hash'%local_branch)
     print(repo.rev_parse(local_branch))
-    print(remote_commit_hash)
+    print(remote_commit_hash_1)
     remote_fetch = repo.remotes.origin
-    remote_fetch.fetch('main')
+    # remote_fetch.fetch('main')
+    #切换分支到main，尝试fetch是针对单个分支还是全部分支？ --若使用fetch()会把全部远程分支更新，所以需要指定特定分支
+    remote_fetch.fetch(local_branch)
 
-    print('-----------更新后远程库hash')
+    # local_commit_hash = repo.rev_parse(local_branch)
+    remote_commit_hash_2 = repo.rev_parse(remote_branch)
+
+    print('-----------更新后远程的%s库hash'%local_branch)
     print(repo.rev_parse(local_branch))
-    print(repo.rev_parse(remote_branch))
+    print(remote_commit_hash_2)
+
+
+    print('************%s'%repo.rev_parse('origin/main'))
 
     bra = repo.active_branch
     print('当前分支',bra)
-
-
-    # remote_fetch.pull()
-
-
-
-    print(repo.rev_parse('origin/main'))
-    if local_commit_hash == remote_commit_hash:
+    if local_commit_hash == remote_commit_hash_2:
         print('本地仓库与远程仓库Hash一致')
-        print('当前分支为：%s\n本地仓库Hash为：%s\n远程仓库Hash为：%s'%(local_branch,local_commit_hash,remote_commit_hash))
+        print('当前分支为：%s\n本地仓库Hash为：%s\n远程仓库Hash为：%s'%(local_branch,local_commit_hash,remote_commit_hash_2))
     else:
-        print("本地仓库与远程仓库Hash不一致")
-        # sleep(10)
+        print("本地仓库与远程仓库Hash不一致，将会自动进行更新......")
+        print("本地仓库Hash为%s\n远程仓库Hash为%s"%(local_commit_hash,remote_commit_hash_2))
+        # sleep(4)
+        #要指定拉取的分支，否则会拉取全部分支到本地
+        remote_fetch.pull(local_branch)
+        print('************%s' % repo.rev_parse('origin/main'))
+        print('更新完成，当前本地Hash为%s\n'%(repo.rev_parse(local_branch)))
         # print('dlsfjaljf')
 
-hash_check()
+
+
+    list1 = ['main','origin/main','t1','origin/t1']
+    for i in list1:
+        print('当前分支为%s,commit的Hash为%s'%(i,repo.rev_parse(i)))
+        # print(i)
+
+
+# hash_check()
 
 
 
