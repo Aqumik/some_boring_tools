@@ -30,7 +30,7 @@ os.chdir(file_path1)
 print('当前工作目录为%s'%(os.getcwd()))
 
 
-
+repo = git.Repo(file_path1)
 
 def push_autor():
     autorer = Actor("dflkjdsf","flajflajlfkja@co.com")
@@ -135,7 +135,7 @@ def branch_test():
 
 # branch_test()
 
-
+#Hash检验模块，用于校验远程仓库本地的情况
 def hash_check():
     #第一次Hash，即hash_1，在未拉取前；第二次Hash，即hash_2，拉取后
     local_branch = 't1'
@@ -192,7 +192,11 @@ def hash_check():
         # print(i)
 
 
-# hash_check()
+hash_check()
+
+
+
+
 
 
 
