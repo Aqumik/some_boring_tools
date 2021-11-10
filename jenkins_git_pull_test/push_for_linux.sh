@@ -235,8 +235,12 @@ git_init_action(){
 main(){
 	ssh_agent_know_hosts_check
 	#进入存放 推送目录 文件夹进行判断
+
+	#python改写完成...
 	ssh_agent_init
+
 	cd ${gitlab_file_dic}
+
 	pushfile_init_action
 	git_init_action
 	git_commit_user

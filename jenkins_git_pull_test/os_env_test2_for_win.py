@@ -21,8 +21,13 @@ f = open(ssh_auth_json_file)
 # returns json object as
 # type dic
 data = json.load(f)
-print(data)
-
+# data2 = data['win_ssh_env']
+data = data['data']
+# print(data2)
+# print(type(data2))
+SSH_AUTH_SOCK = data['SSH_AUTH_SOCK']
+SSH_AGENT_PID = data['SSH_AGENT_PID']
+print(SSH_AGENT_PID,SSH_AUTH_SOCK)
 # project_dir = os.path.dirname(file_path1)
 # print(project_dir)
 # SSH_AUTH_SOCK='/tmp/ssh-Cy3ZdOv5uvXq/agent.2330'

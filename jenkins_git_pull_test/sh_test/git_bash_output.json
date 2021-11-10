@@ -1,8 +1,7 @@
 {
-	"data":[
+	"data":
 		{
-			"SSH_AUTH_SOCK":"/tmp/ssh-zsZD0ktYq6XD/agent.2446"},
-		{
+			"SSH_AUTH_SOCK":"/tmp/ssh-zsZD0ktYq6XD/agent.2446",
 			"SSH_AGENT_PID":"2447"}
-	]
+
 }
