@@ -48,7 +48,7 @@ output_func(){
 	        for_num=$[${for_num}-1]
 	    else
 	        printf '\t\t{\n'
-	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"},\n"
+	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"}\n"
       fi
 	done
 	printf "\t]\n"
