@@ -38,10 +38,18 @@ output_func(){
 	printf "{\n"
 	printf '\t"data":[\n'
 	#for ((i=0;i<${#output_dict[@]};i++))
+	#for_num 用于统计循环的次数并生成对应的json格式
+	for_num=${#output_dict[@]}
 	for ie in ${!output_dict[*]};
 	do
+	    if [[ ${for_num} -gt 1 ]]; then
 	        printf '\t\t{\n'
-	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"}\n"
+	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"},\n"
+	        for_num=$[${for_num}-1]
+	    else
+	        printf '\t\t{\n'
+	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"},\n"
+      fi
 	done
 	printf "\t]\n"
 	printf "}\n"	
