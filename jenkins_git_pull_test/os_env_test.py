@@ -8,7 +8,7 @@ from getpass import getpass
 #使用gitee
 from git import Git, Repo
 
-file_path1='/Users/aqumik/Desktop/git_test/11/'
+file_path1='/Users/aqumik/Desktop/git_test/11/t1'
 new1=''
 repo_url='git@gitee.com:chetimberk/test.git'
 # repo_url='git@github.com:Aqumik/go_learnning.git'
