@@ -9,7 +9,8 @@ echo "echo ${ssh_passphrase}" > ${ssh_passphrase_path}
 chmod +x ${ssh_passphrase_path}
 echo ${ssh_key_path}
 
-
+# https://unix.stackexchange.com/questions/571741/how-to-pass-a-passphrase-to-ssh-add-without-triggering-a-prompt
+# 直接把密码传到密钥，不需要使用except模块进行自动交互
 DISPLAY=1 SSH_ASKPASS="${ssh_passphrase_path}" ssh-add ${ssh_key_path} < /dev/null
 ssh-add -l
 
