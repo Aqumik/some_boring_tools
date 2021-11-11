@@ -244,7 +244,10 @@ main(){
 	pushfile_init_action
 	git_init_action
 	git_commit_user
+
 	check_branch_hash
+
+
 	git_commit_action
 	kill ${pid}
 	echo "has been killed ssh-agent ${pid}"	

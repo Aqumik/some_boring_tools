@@ -72,7 +72,7 @@ def echo_100():
 def echo_jiou():
     list1 = []
     list2 = []
-    list3 = list(range(10501,10551))
+    list3 = list(range(801,851))
     for i in list3:
         if (i % 2) == 0:
             list1.append(i)
@@ -88,4 +88,4 @@ def echo_jiou():
 if __name__ == "__main__":
 
     print('-----------')
-    echo_100()
+    echo_jiou()
