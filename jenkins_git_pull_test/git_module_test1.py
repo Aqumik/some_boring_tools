@@ -192,7 +192,7 @@ def hash_check():
         # print(i)
 
 
-hash_check()
+# hash_check()
 
 
 
