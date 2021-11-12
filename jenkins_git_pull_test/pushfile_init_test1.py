@@ -16,10 +16,11 @@ push_root_dir = '/Users/aqumik/Desktop/git_test/11'
 file_name = 't4'
 push_usr_dir = push_root_dir + '/' + file_name
 branch_name = 'master'
-repo_url = 'git@gitee.com:chetimberk/test.git'
-SSH_AUTH_SOCK = '/var/folders/f9/vgqgcqy92vb6d_njsxgm5sz80000gn/T//ssh-FXMs7YvI8Kvy/agent.48496'
+repo_url = 'git@gitee.com:chetimberk/jenkins-test1.git'
+SSH_AUTH_SOCK = '/var/folders/f9/vgqgcqy92vb6d_njsxgm5sz80000gn/T//ssh-uXFQ9w8VWBKq/agent.92724'
 commit_content = 'Halo guys!'
 os.environ['SSH_AUTH_SOCK'] = SSH_AUTH_SOCK
+repo_name = 'origin'
 
 jenkins_output_path = '/Users/aqumik/Desktop/git_test/jenkins_output/project1'
 #切换到存放推送文件的根目录
@@ -145,11 +146,34 @@ def delete_module():
             print('Failed to delele %s . Reason: %s '%(file_path,e))
 
 
+# def push_action_module()
+#     print('更新分支')
 
-# delete_module()
+work_branch = 'test1'
+def working_branch_module():
+    repo = git.Repo(push_usr_dir)
+    print('当前处于的分支： %s'%(repo.active_branch))
+    print('切换到工作分支%s'%work_branch)
+    repo.git.checkout(work_branch)
+    print('当前处于的分支： %s' % (repo.active_branch))
 
-# def git_push_action()
+def pull_action_module():
+    repo = git.Repo(push_usr_dir)
+    remote_fetch = repo.remotes.origin
 
+    print('拉取分支内容.....')
+    remote_fetch.pull(work_branch)
 
+def push_action_module():
+    repo = git.Repo(push_usr_dir)
+    print('当前处于的分支： %s' % (repo.active_branch))
+    repo.git.add('--all')
 
-# git_init_action(file_exists())
+    repo.index.commit(commit_content)
+    # 是否只推送当前分支？ 是的
+    origin = repo.remote(name=repo_name)
+    origin.push()
+
+working_branch_module()
+push_action_module()
+# pull_action_module()
