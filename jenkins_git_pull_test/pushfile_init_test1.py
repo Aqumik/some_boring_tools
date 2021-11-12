@@ -15,7 +15,7 @@ push_root_dir = '/Users/aqumik/Desktop/git_test/11'
 #file_name 必须是项目的文件夹
 file_name = 't4'
 push_usr_dir = push_root_dir + '/' + file_name
-branch_name = 'master'
+local_branch_name = 'master'
 repo_url = 'git@gitee.com:chetimberk/jenkins-test1.git'
 SSH_AUTH_SOCK = '/var/folders/f9/vgqgcqy92vb6d_njsxgm5sz80000gn/T//ssh-uXFQ9w8VWBKq/agent.92724'
 commit_content = 'Halo guys!'
@@ -75,7 +75,7 @@ def git_init_action(file_return):
     print(os.getcwd())
     if file_return == 3:
         print('推送目录不存在，将会从远程仓库进行拉取....')
-        Repo.clone_from(repo_url, push_usr_dir, branch=branch_name, progress=CloneProgress())
+        Repo.clone_from(repo_url, push_usr_dir, branch=local_branch_name, progress=CloneProgress())
 
     elif file_return == 2:
         print("项目本地Git仓库已存在")
@@ -90,7 +90,7 @@ def git_init_action(file_return):
         # os.removedirs(push_usr_dir)
         #删除非空目录
         shutil.rmtree(push_usr_dir)
-        Repo.clone_from(repo_url, push_usr_dir, branch=branch_name, progress=CloneProgress())
+        Repo.clone_from(repo_url, push_usr_dir, branch=local_branch_name, progress=CloneProgress())
     else:
         print('程序中止，git_init_action模块接收的返回值异常')
         sys.exit(1)
@@ -170,7 +170,7 @@ def push_action_module():
     repo.git.add('--all')
 
     repo.index.commit(commit_content)
-    # 是否只推送当前分支？ 是的
+    # 是否只推送当前分支？ 是
     origin = repo.remote(name=repo_name)
     origin.push()
 

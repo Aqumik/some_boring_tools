@@ -28,5 +28,3 @@ class Git_push_test(object):
 
 
 
-
-if __name__=='__main__':
