@@ -1,5 +1,5 @@
 # -*- coding:UTF-8 -*-
-
+import ctypes
 import os
 import sys
 
@@ -40,9 +40,6 @@ class CloneProgress(RemoteProgress):
         self.pbar.total = max_count
         self.pbar.n = cur_count
         self.pbar.refresh()
-
-
-
 
 
 
@@ -99,17 +96,60 @@ def git_init_action(file_return):
 
 #jenkins编译出来的文件处理模块
 #处理的内容：1、清空当前目录下所有文件    2、将 jenkins编译出的文件复制到 当前项目文件夹下
-
-    
 #jenkins获取到的workspace工作目录 /var/lib/jenkins/workspace/master-build   master-build为项目的名字
-def file_handle_module():
 
 
 
+#文件处理，从jenkins编译出的文件复制
+"""
+    注意点：
+            1、jenkins目录下隐藏文件不复制，因为jenkins工作目录可能存在某些如svn git隐藏文件，没必要复制到指定文件
+            2、测试大文件时工作是否正常？
+            3、路径粒度为 项目名字，比如Jenkins路径为：/Users/aqumik/Desktop/git_test/jenkins_output/project1，则 project1为最细的粒度
+            4、路径问题
+"""
+def jenkins_to_push_dir_module():
+    print('hi')
+    test1 = '/Users/aqumik/Desktop/git_test/jenkins_output/project1/1'
+    # shutil.copy2(jenkins_output_path,push_usr_dir,dirs_exist_ok=True)
+    # shutil.copytree功能请看。。。https://docs.python.org/3/library/shutil.html#copytree-example
+    # 复制目录，忽略隐藏文件
+    shutil.copytree(jenkins_output_path, push_usr_dir, dirs_exist_ok=True, ignore=shutil.ignore_patterns(".*"))
+# file_handle_module()
 
+def delete_module():
+    # 值得注意是此处会把隐藏文件也加到列表中,".git"也会被遍历到，所以此处要将隐藏文件都排除在列表外
+    # Windows下的隐藏文件是否一样？
+    # 项目文件是否存在隐藏文件？
+    # 当前做法是把全部 '.'开头的文件过滤，组成新的列表，并不是删除列表内的元素
+    del_list = os.listdir(push_usr_dir)
+    print(del_list)
+    print(type(del_list))
+    # print(id(del_list))
+    del_list = [ hide_file for hide_file in del_list if not hide_file.startswith('.')]
+    print(del_list)
+    # print(id(del_list))
+    #清空目录下所有文件或文件夹，".git"等隐藏文件除外
+    #针对非常大的目录，此处Windows系统中的处理可能需要注意，可以使用 “os.scandir(folder)”
+    #https://stackoverflow.com/questions/185936/how-to-delete-the-contents-of-a-folder
+    for filename in del_list:
+        file_path = os.path.join(push_usr_dir,filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+                print('Delete file %s Suc!'%(file_path))
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+                print('Delete Dir %s Suc!' % (file_path))
+        except Exception as e:
+            print('Failed to delele %s . Reason: %s '%(file_path,e))
+
+
+
+# delete_module()
 
 # def git_push_action()
 
 
 
-git_init_action(file_exists())
+# git_init_action(file_exists())
