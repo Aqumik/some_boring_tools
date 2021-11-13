@@ -23,6 +23,7 @@ class CloneProgress(RemoteProgress):
 
 
 
+
 class Git_module(object):
     def __init__(self,push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name):
         #本地系统环境部分
@@ -43,6 +44,8 @@ class Git_module(object):
 
         #实例化对象
         self.repo = git.Repo(self.push_usr_dir)
+
+
 
     #切换工作分支模块
     def checkout_branch(self):
