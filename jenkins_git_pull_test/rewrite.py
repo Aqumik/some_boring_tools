@@ -13,8 +13,33 @@ import os
 #     localtime = time.asctime( time.localtime(time.time()) )
 #     i.write('%shalo gitlab3\n'%(localtime))
 
-import sys,time
-for i in range(30): #进度条类型
-    sys.stdout.write("*")
-    sys.stdout.flush()
-    time.sleep(0.2)
+class tets(object):
+    def __init__(self, SSH_AUTH_SOCK, SSH_AGENT_PID):
+        self.SSH_AUTH_SOCK = str()
+        self.SSH_AGENT_PID = int()
+    def t1(self):
+        a = 9
+        # b = 2
+        self.SSH_AUTH_SOCK = a
+        self.SSH_AGENT_PID = 10
+        return self.SSH_AUTH_SOCK,self.SSH_AGENT_PID
+    def t2(self):
+        # self.t1()
+        print(self.SSH_AUTH_SOCK)
+        print(self.SSH_AGENT_PID)
+
+
+c = tets(1,2)
+print(c.t1())
+# c.t2()
+
+# def foo(*args, **kwargs):
+#     print('args = ', args)
+#     print('kwargs = ', kwargs)
+#     print('---------------------------------------')
+#
+# if __name__ == '__main__':
+#     dic = { '1' : 1,'2' : 2 }
+#     b = 1
+#     c = 2
+#     foo(b,c,e=2)

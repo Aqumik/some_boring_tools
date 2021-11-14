@@ -1,13 +1,14 @@
 # -*- coding:UTF-8 -*-
-
+import json
 import os
+# 删除非空目录
+import shutil
+import subprocess
 import sys
-import git
-from git import Repo,RemoteProgress
-from tqdm import tqdm
-#删除非空目录
-import  shutil
 
+import git
+from git import Repo, RemoteProgress
+from tqdm import tqdm
 
 
 # 代码克隆进度条功能
@@ -22,7 +23,80 @@ class CloneProgress(RemoteProgress):
         self.pbar.refresh()
 
 
+# 负责处理系统环境变量以及进程管理的类
+# 路径放在哪里？ 当前目录还是？？？？
+class Os_env(object):
+    def __init__(self):
+        self.SSH_AUTH_SOCK = str()
+        self.SSH_AGENT_PID = int()
 
+    def win_get_ssh_env(self):
+        git_bash_run_ssh_agent = subprocess.Popen(
+            ["C:\Program Files\Git\git-bash.exe",
+             "E:\github\some_boring_tools\jenkins_git_pull_test\sh_test\env_output.sh"],
+            bufsize=1,
+            stdin=None,
+            stdout=None,
+            stderr=None,
+            preexec_fn=None,
+            close_fds=True,
+            shell=False,
+            #cwd变量是否可以不要？
+            cwd="E:\github\some_boring_tools\jenkins_git_pull_test",
+        )
+        # git_ssh_identify_file = '/Users/aqumik/Documents/ssh_key/no_pass_gitlab'
+        # ssh_auth_json_file = '/Users/aqumik/Desktop/Github/some_boring_tools/jenkins_git_pull_test/sh_test/git_bash_output.json'
+        # read_json = open(ssh_auth_json_file)
+        # data = json.load(read_json)
+        # # data 将会接收到类似 {'SSH_AUTH_SOCK': '/tmp/ssh-zsZD0ktYq6XD/agent.2446', 'SSH_AGENT_PID': '2447'} 的字典可以直接调用
+        # data = data['win_ssh_env']
+        #
+        # #change the os env
+        # #有了 SSH_AUTH_SOCK 可以直接调用该sock去提交代码，因为该sock绑定了对应的密钥
+        # self.SSH_AUTH_SOCK = data['SSH_AUTH_SOCK']
+        # #PID用于后续关闭对应的SSH Agent，若不关闭每次调用都会开启一个进程
+        # self.SSH_AGENT_PID = data['SSH_AGENT_PID']
+        # # print(os.environ.keys())
+        #
+        # # os.environ['SSH_AUTH_SOCK'] = SSH_AUTH_SOCK
+        # #
+        # # Repo.clone_from(repo_url, file_path1, branch='master')
+        # # return data
+    #处理Json模块
+    def json_handle(self):
+        ssh_auth_json_file = '/Users/aqumik/Desktop/Github/some_boring_tools/jenkins_git_pull_test/sh_test/git_bash_output.json'
+        read_json = open(ssh_auth_json_file)
+        data = json.load(read_json)
+        # data 将会接收到类似 {'SSH_AUTH_SOCK': '/tmp/ssh-zsZD0ktYq6XD/agent.2446', 'SSH_AGENT_PID': '2447'} 的字典可以直接调用
+        data = data['win_ssh_env']
+        #change the os env
+        #有了 SSH_AUTH_SOCK 可以直接调用该sock去提交代码，因为该sock绑定了对应的密钥
+        self.SSH_AUTH_SOCK = data['SSH_AUTH_SOCK']
+        #PID用于后续关闭对应的SSH Agent，若不关闭每次调用都会开启一个进程
+        self.SSH_AGENT_PID = data['SSH_AGENT_PID']
+        # print(data)
+
+    def change_sys_env(self):
+        # print(os.environ.keys()
+        # 添加SSH_AUTH_SOCK 变量到环境变量中
+        os.environ['SSH_AUTH_SOCK'] = self.SSH_AUTH_SOCK
+    # Windows   提取ssh-agent环境参数模块
+    # 后续需要杀死进程
+
+    # 此处需要后续杀掉进程
+    def kill_ssh_agent_win(self):
+        # self.win_get_ssh_env()
+        print('杀死Win下 SSH Agent进程')
+        print('进程号为%s'%self.SSH_AGENT_PID)
+
+    def kill_ssh_agent_linux(self):
+        # self.win_get_ssh_env()
+        print('杀死Linux下 SSH Agent进程')
+        print('进程号为%s'%self.SSH_AGENT_PID)
+
+    def test(self):
+        self.json_handle()
+        print(self.SSH_AGENT_PID,self.SSH_AUTH_SOCK)
 
 class Git_module(object):
     def __init__(self,push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name):
@@ -119,7 +193,7 @@ class Git_module(object):
                 return 2
 
     # 接收 file_exits函数返回值再做适当的初始化
-    def git_init_action(self,pro_file_return=pro_file_is_exists()):
+    def git_init_action(self,pro_file_return=pro_file_is_exists):
         push_usr_dir = self.push_usr_dir
         print(os.getcwd())
         if pro_file_return == 3:
@@ -222,5 +296,7 @@ if __name__ == '__main__':
     commit_content = 'hahahahahahahahah'
     repo_name = 'origin'
     remote_branch_name = 'master'
-    g = Git_module(push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name)
-    g.hash()
+    # g = Git_module(push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name)
+    g = Os_env()
+    # g.handle_json()
+    g.test()
