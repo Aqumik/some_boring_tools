@@ -138,10 +138,16 @@ class Git_module(object):
         repo = self.repo
         local_branch_name = self.local_branch_name
         remote_fetch = repo.remotes.origin
-        remote_fetch.fetch(local_branch_name)
+        remote_fetch.fetch()
+
         #会自动在本地创建新分支并于远程分支连接
-        repo.git.checkout(local_branch_name)
-        print('切换分支到%s' % local_branch_name)
+        try:
+            repo.git.checkout(local_branch_name)
+            print('切换分支到%s' % local_branch_name)
+        except:
+            repo.create_head(local_branch_name)
+            repo.git.checkout(local_branch_name)
+            print('..........当前设置的分支为新分支，远程仓库并不存在该分支，将会自动创建新分支推送到本地')
 
     #切换工作根路径模块
     def change_work_path(self):
@@ -152,45 +158,50 @@ class Git_module(object):
         repo = self.repo
         local_branch_name = self.local_branch_name
         remote_branch_name = self.remote_branch_name
-        # repo.git.checkout(local_branch_name)
         remote_fetch = repo.remotes.origin
         # 切换分支到main，尝试fetch是针对单个分支还是全部分支？ --若使用fetch()会把全部远程分支更新，所以需要指定特定分支
-        remote_fetch.fetch(local_branch_name)
+        try:
+            #有可能存在一种可能,本地存在的分支，远程不存在，则需要同时把新的分支推送到远程仓库
+            remote_fetch.fetch(local_branch_name)
+            local_commit_hash = repo.rev_parse(local_branch_name)
+            remote_commit_hash_before = repo.rev_parse(remote_branch_name)
+            print('切换分支到%s' % local_branch_name)
+            print(repo.rev_parse(local_branch_name))
+            print(remote_commit_hash_before)
 
-        local_commit_hash = repo.rev_parse(local_branch_name)
-        remote_commit_hash_before = repo.rev_parse(remote_branch_name)
-        print('切换分支到%s' % local_branch_name)
-        print(repo.rev_parse(local_branch_name))
-        print(remote_commit_hash_before)
+            print('-----------更新前远程的%s库hash' % local_branch_name)
 
-        print('-----------更新前远程的%s库hash'%local_branch_name)
+            remote_commit_hash_after = repo.rev_parse(remote_branch_name)
 
-        remote_commit_hash_after = repo.rev_parse(remote_branch_name)
+            print('-----------更新后远程的%s库hash' % local_branch_name)
 
-        print('-----------更新后远程的%s库hash' % local_branch_name)
+            print('--------')
+            print(repo.rev_parse(local_branch_name))
+            print(remote_commit_hash_after)
 
-        print('--------')
-        print(repo.rev_parse(local_branch_name))
-        print(remote_commit_hash_after)
+            print('当前项目分支为%s' % repo.active_branch)
+            print('*******')
+            if local_commit_hash == remote_commit_hash_after:
+                print('本地仓库与远程仓库Hash一致')
+                print('当前分支为：%s\n本地仓库Hash为：%s\n远程仓库Hash为：%s' % (
+                    local_branch_name, local_commit_hash, remote_commit_hash_after))
+            else:
+                print("本地仓库与远程仓库Hash不一致，将会自动进行更新......")
+                print("本地仓库Hash为%s\n远程仓库Hash为%s" % (local_commit_hash, remote_commit_hash_after))
+                # sleep(4)
+                # 要指定拉取的分支，否则会拉取全部分支到本地
+                remote_fetch.pull(local_branch_name)
+                print('************%s' % repo.rev_parse('origin/main'))
+                print('更新完成，当前本地Hash为%s\n' % (repo.rev_parse(local_branch_name)))
 
-        print('当前项目分支为%s'%repo.active_branch)
-        print('*******')
-        if local_commit_hash == remote_commit_hash_after:
-            print('本地仓库与远程仓库Hash一致')
-            print('当前分支为：%s\n本地仓库Hash为：%s\n远程仓库Hash为：%s' % (local_branch_name, local_commit_hash, remote_commit_hash_after))
-        else:
-            print("本地仓库与远程仓库Hash不一致，将会自动进行更新......")
-            print("本地仓库Hash为%s\n远程仓库Hash为%s" % (local_commit_hash, remote_commit_hash_after))
-            # sleep(4)
-            # 要指定拉取的分支，否则会拉取全部分支到本地
-            remote_fetch.pull(local_branch_name)
-            print('************%s' % repo.rev_parse('origin/main'))
-            print('更新完成，当前本地Hash为%s\n' % (repo.rev_parse(local_branch_name)))
+            # 测试当前所有分支情况
+            # list1 = ['main', 'origin/main', 't1', 'origin/t1']
+            # for i in list1:
+            #     print('当前分支为%s,commit的Hash为%s' % (i, repo.rev_parse(i)))
+        except:
+            print('..........当前设置的分支为新分支，远程仓库并不存在该分支，将会自动创建新分支推送到远程仓库')
+            pass
 
-        #测试当前所有分支情况
-        # list1 = ['main', 'origin/main', 't1', 'origin/t1']
-        # for i in list1:
-        #     print('当前分支为%s,commit的Hash为%s' % (i, repo.rev_parse(i)))
 
     #检测文件存在情况情况（1、项目目录是否存在 2、本地Git仓库是否存在）
     #设有返回值
@@ -300,7 +311,10 @@ class Git_module(object):
         remote_fetch = repo.remotes.origin
 
         print('拉取分支内容.....')
-        remote_fetch.pull(local_branch_name)
+        try:
+            remote_fetch.pull(local_branch_name)
+        except:
+            pass
 
     def push_action_module(self):
         repo = self.repo
@@ -308,15 +322,16 @@ class Git_module(object):
         repo.git.add('--all')
         repo.index.commit(commit_content)
         # 是否只推送当前分支？ 是
-        origin = repo.remote(name=repo_name)
-        origin.push()
+        # origin = repo.remote(name=repo_name)
+        # origin.push()
+        repo.git.push(self.repo_name,self.local_branch_name)
 
 if __name__ == '__main__':
     push_root_dir = '/Users/aqumik/Desktop/git_test/11'
     file_name = 't4'
     jenkins_output_path = '/Users/aqumik/Desktop/git_test/jenkins_output/project1'
     repo_url = 'git@gitee.com:chetimberk/jenkins-test1.git'
-    local_branch_name = 'test5'
+    local_branch_name = 'test4'
     commit_content = 'hahahahahahahahah'
     repo_name = 'origin'
     remote_branch_name = local_branch_name
