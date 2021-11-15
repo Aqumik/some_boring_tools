@@ -41,11 +41,13 @@ class tets(object):
         print(self.repo)
         return self.repo
 
+os.environ['SSH_AUTH_SOCK'] = '/var/folders/f9/vgqgcqy92vb6d_njsxgm5sz80000gn/T//ssh-YZcY8WFst6j7/agent.4183'
 
-c = tets(1)
-c.git_method()
-
-
+repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
+branch_name = 'test3'
+# print(repo.rev_parse(branch_name))
+remote_fetch = repo.remotes.origin
+remote_fetch.fetch(branch_name)
 # c.t2()
 
 # def foo(*args, **kwargs):

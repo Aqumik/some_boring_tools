@@ -130,13 +130,16 @@ class Git_module(object):
     #     print(self.repo)
     #     return self.repo
 
-    def testtttttt(self):
+    def git_repo(self):
         self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
         print(self.repo)
     #切换工作分支模块
     def checkout_branch(self):
-
         repo = self.repo
+        local_branch_name = self.local_branch_name
+        remote_fetch = repo.remotes.origin
+        remote_fetch.fetch(local_branch_name)
+        #会自动在本地创建新分支并于远程分支连接
         repo.git.checkout(local_branch_name)
         print('切换分支到%s' % local_branch_name)
 
@@ -150,6 +153,10 @@ class Git_module(object):
         local_branch_name = self.local_branch_name
         remote_branch_name = self.remote_branch_name
         # repo.git.checkout(local_branch_name)
+        remote_fetch = repo.remotes.origin
+        # 切换分支到main，尝试fetch是针对单个分支还是全部分支？ --若使用fetch()会把全部远程分支更新，所以需要指定特定分支
+        remote_fetch.fetch(local_branch_name)
+
         local_commit_hash = repo.rev_parse(local_branch_name)
         remote_commit_hash_before = repo.rev_parse(remote_branch_name)
         print('切换分支到%s' % local_branch_name)
@@ -157,9 +164,6 @@ class Git_module(object):
         print(remote_commit_hash_before)
 
         print('-----------更新前远程的%s库hash'%local_branch_name)
-        remote_fetch = repo.remotes.origin
-        # 切换分支到main，尝试fetch是针对单个分支还是全部分支？ --若使用fetch()会把全部远程分支更新，所以需要指定特定分支
-        remote_fetch.fetch(local_branch_name)
 
         remote_commit_hash_after = repo.rev_parse(remote_branch_name)
 
@@ -312,10 +316,10 @@ if __name__ == '__main__':
     file_name = 't4'
     jenkins_output_path = '/Users/aqumik/Desktop/git_test/jenkins_output/project1'
     repo_url = 'git@gitee.com:chetimberk/jenkins-test1.git'
-    local_branch_name = 'master'
+    local_branch_name = 'test5'
     commit_content = 'hahahahahahahahah'
     repo_name = 'origin'
-    remote_branch_name = 'master'
+    remote_branch_name = local_branch_name
     # g = Git_module(push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name)
     # try:
     sys_env = Os_env()
@@ -333,9 +337,10 @@ if __name__ == '__main__':
     git_u.change_work_path()
     git_u.git_init_action()
     #实例化Repo
-    git_u.testtttttt()
+    git_u.git_repo()
     git_u.checkout_branch()
     git_u.hash()
+
     git_u.pull_action_module()
     git_u.delete_module()
     git_u.jenkins_to_push_dir()
