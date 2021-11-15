@@ -1,6 +1,7 @@
 # -*- coding:UTF-8 -*-
 import time
 import os
+import git
 
 # file_path1='/Users/aqumik/Desktop/git_test/push_test'
 # print('当前工作目录为%s'%(os.getcwd()))
@@ -14,23 +15,37 @@ import os
 #     i.write('%shalo gitlab3\n'%(localtime))
 
 class tets(object):
-    def __init__(self, SSH_AUTH_SOCK, SSH_AGENT_PID):
-        self.SSH_AUTH_SOCK = str()
+    def __init__(self,id):
+        self.SSH_AUTH_SOCK = id
         self.SSH_AGENT_PID = int()
+        self.repo = None
     def t1(self):
-        a = 9
-        # b = 2
-        self.SSH_AUTH_SOCK = a
-        self.SSH_AGENT_PID = 10
-        return self.SSH_AUTH_SOCK,self.SSH_AGENT_PID
+        pass
+        # self.git_method()
+        # print(type(self.repo))
+        # return a
     def t2(self):
         # self.t1()
-        print(self.SSH_AUTH_SOCK)
-        print(self.SSH_AGENT_PID)
+        numm = self.t1()
+        num = numm
+        if num == 1:
+            print('failed')
+        else:
+            print('bingo')
+            print(num)
+        # print(self.SSH_AUTH_SOCK)
+        # print(self.SSH_AGENT_PID)
+    def git_method(self):
+        self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
+        # print(type(repo))
+        print(self.repo)
+        return self.repo
 
 
-c = tets(1,2)
-print(c.t1())
+c = tets(1)
+c.git_method()
+
+
 # c.t2()
 
 # def foo(*args, **kwargs):

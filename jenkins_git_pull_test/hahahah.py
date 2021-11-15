@@ -7,7 +7,8 @@ import subprocess
 import sys
 
 import git
-from git import Repo, RemoteProgress
+
+from git import Repo,RemoteProgress
 from tqdm import tqdm
 
 
@@ -78,6 +79,7 @@ class Os_env(object):
 
     def change_sys_env(self):
         # print(os.environ.keys()
+        self.json_handle()
         # 添加SSH_AUTH_SOCK 变量到环境变量中
         os.environ['SSH_AUTH_SOCK'] = self.SSH_AUTH_SOCK
     # Windows   提取ssh-agent环境参数模块
@@ -86,6 +88,7 @@ class Os_env(object):
     # 此处需要后续杀掉进程
     def kill_ssh_agent_win(self):
         # self.win_get_ssh_env()
+        self.json_handle()
         print('杀死Win下 SSH Agent进程')
         print('进程号为%s'%self.SSH_AGENT_PID)
 
@@ -103,7 +106,8 @@ class Git_module(object):
         #本地系统环境部分
         self.push_root_dir = push_root_dir
         self.file_name = file_name
-        self.push_usr_dir = os.path.join(push_root_dir,file_name)
+        # self.push_usr_dir = os.path.join(push_root_dir,file_name)
+        self.push_usr_dir = '/Users/aqumik/Desktop/git_test/11/t4'
         self.jenkins_output_path = jenkins_output_path
 
         #本地Git仓库部分
@@ -117,21 +121,34 @@ class Git_module(object):
         self.remote_branch_name = remote_branch_name
 
         #实例化对象
-        self.repo = git.Repo(self.push_usr_dir)
+        self.repo = None
 
 
+    #实例化对象
+    # def git_method(self):
+    #     self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
+    #     print(self.repo)
+    #     return self.repo
 
+    def testtttttt(self):
+        self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
+        print(self.repo)
     #切换工作分支模块
     def checkout_branch(self):
+
         repo = self.repo
         repo.git.checkout(local_branch_name)
         print('切换分支到%s' % local_branch_name)
 
-    #切换工作路径模块
+    #切换工作根路径模块
+    def change_work_path(self):
+        os.chdir(self.push_root_dir)
 
     #Hash模块
     def hash(self):
         repo = self.repo
+        local_branch_name = self.local_branch_name
+        remote_branch_name = self.remote_branch_name
         # repo.git.checkout(local_branch_name)
         local_commit_hash = repo.rev_parse(local_branch_name)
         remote_commit_hash_before = repo.rev_parse(remote_branch_name)
@@ -147,11 +164,13 @@ class Git_module(object):
         remote_commit_hash_after = repo.rev_parse(remote_branch_name)
 
         print('-----------更新后远程的%s库hash' % local_branch_name)
-        print(repo.rev_parse(local_commit_hash))
+
+        print('--------')
+        print(repo.rev_parse(local_branch_name))
         print(remote_commit_hash_after)
 
         print('当前项目分支为%s'%repo.active_branch)
-
+        print('*******')
         if local_commit_hash == remote_commit_hash_after:
             print('本地仓库与远程仓库Hash一致')
             print('当前分支为：%s\n本地仓库Hash为：%s\n远程仓库Hash为：%s' % (local_branch_name, local_commit_hash, remote_commit_hash_after))
@@ -193,7 +212,8 @@ class Git_module(object):
                 return 2
 
     # 接收 file_exits函数返回值再做适当的初始化
-    def git_init_action(self,pro_file_return=pro_file_is_exists):
+    def git_init_action(self):
+        pro_file_return = self.pro_file_is_exists()
         push_usr_dir = self.push_usr_dir
         print(os.getcwd())
         if pro_file_return == 3:
@@ -297,6 +317,35 @@ if __name__ == '__main__':
     repo_name = 'origin'
     remote_branch_name = 'master'
     # g = Git_module(push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name)
-    g = Os_env()
-    # g.handle_json()
-    g.test()
+    # try:
+    sys_env = Os_env()
+    git_u = Git_module(push_root_dir, file_name, jenkins_output_path, repo_url, local_branch_name, commit_content,repo_name, remote_branch_name)
+
+    #
+    # sys_env.win_get_ssh_env()
+    # 到这一步，环境变量已经设置好
+    sys_env.change_sys_env()
+
+    # 接下来就是对Jenkins环境的操作
+    # 是否需要切换工作目录？
+    # 还差一个修改作者 和 邮箱功能
+
+    git_u.change_work_path()
+    git_u.git_init_action()
+    #实例化Repo
+    git_u.testtttttt()
+    git_u.checkout_branch()
+    git_u.hash()
+    git_u.pull_action_module()
+    git_u.delete_module()
+    git_u.jenkins_to_push_dir()
+    git_u.push_action_module()
+
+
+
+    # except Exception as e:
+    #     sys_env = Os_env()
+    #     sys_env.kill_ssh_agent_win()
+
+
+
