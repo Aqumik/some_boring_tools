@@ -20,7 +20,7 @@ chmod +x ${ssh_passphrase_name}
 
 # https://unix.stackexchange.com/questions/571741/how-to-pass-a-passphrase-to-ssh-add-without-triggering-a-prompt
 # 直接把密码传到密钥，不需要使用except模块进行自动交互
-DISPLAY=1 SSH_ASKPASS="${ssh_passphrase_name}" ssh-add ${ssh_key_path} < /dev/null
+DISPLAY=1 SSH_ASKPASS="${work_path}/${ssh_passphrase_name}" ssh-add ${ssh_key_path} < /dev/null
 ssh-add -l
 
 env_var=(SSH_AGENT_PID SSH_AUTH_SOCK)
@@ -47,7 +47,7 @@ output_func(){
 	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\",\n"
 	        for_num=$[${for_num}-1]
 	    else
-	        printf '\t\t{\n'
+	        printf '\t\t\n'
 	        printf "\t\t\t\"${ie}\":\"${output_dict[${ie}]}\"}\n"
       fi
 	done

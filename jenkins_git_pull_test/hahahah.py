@@ -8,7 +8,7 @@ import sys
 
 import git
 
-from git import Repo,RemoteProgress
+from git import Repo, RemoteProgress
 from tqdm import tqdm
 
 
@@ -18,6 +18,7 @@ class CloneProgress(RemoteProgress):
     def __init__(self):
         super().__init__()
         self.pbar = tqdm()
+
     def update(self, op_code, cur_count, max_count=None, message=''):
         self.pbar.total = max_count
         self.pbar.n = cur_count
@@ -42,8 +43,8 @@ class Os_env(object):
             preexec_fn=None,
             close_fds=True,
             shell=False,
-            #cwd变量是否可以不要？
-            cwd="E:\github\some_boring_tools\jenkins_git_pull_test",
+            # cwd变量是否可以不要？
+            # cwd="E:\github\some_boring_tools\jenkins_git_pull_test",
         )
         # git_ssh_identify_file = '/Users/aqumik/Documents/ssh_key/no_pass_gitlab'
         # ssh_auth_json_file = '/Users/aqumik/Desktop/Github/some_boring_tools/jenkins_git_pull_test/sh_test/git_bash_output.json'
@@ -63,17 +64,18 @@ class Os_env(object):
         # #
         # # Repo.clone_from(repo_url, file_path1, branch='master')
         # # return data
-    #处理Json模块
+
+    # 处理Json模块
     def json_handle(self):
-        ssh_auth_json_file = '/Users/aqumik/Desktop/Github/some_boring_tools/jenkins_git_pull_test/sh_test/git_bash_output.json'
+        ssh_auth_json_file = 'E:\github\some_boring_tools\jenkins_git_pull_test\sh_test\git_bash_output.json'
         read_json = open(ssh_auth_json_file)
         data = json.load(read_json)
         # data 将会接收到类似 {'SSH_AUTH_SOCK': '/tmp/ssh-zsZD0ktYq6XD/agent.2446', 'SSH_AGENT_PID': '2447'} 的字典可以直接调用
         data = data['win_ssh_env']
-        #change the os env
-        #有了 SSH_AUTH_SOCK 可以直接调用该sock去提交代码，因为该sock绑定了对应的密钥
+        # change the os env
+        # 有了 SSH_AUTH_SOCK 可以直接调用该sock去提交代码，因为该sock绑定了对应的密钥
         self.SSH_AUTH_SOCK = data['SSH_AUTH_SOCK']
-        #PID用于后续关闭对应的SSH Agent，若不关闭每次调用都会开启一个进程
+        # PID用于后续关闭对应的SSH Agent，若不关闭每次调用都会开启一个进程
         self.SSH_AGENT_PID = data['SSH_AGENT_PID']
         # print(data)
 
@@ -82,6 +84,7 @@ class Os_env(object):
         self.json_handle()
         # 添加SSH_AUTH_SOCK 变量到环境变量中
         os.environ['SSH_AUTH_SOCK'] = self.SSH_AUTH_SOCK
+
     # Windows   提取ssh-agent环境参数模块
     # 后续需要杀死进程
 
@@ -90,57 +93,59 @@ class Os_env(object):
         # self.win_get_ssh_env()
         self.json_handle()
         print('杀死Win下 SSH Agent进程')
-        print('进程号为%s'%self.SSH_AGENT_PID)
+        print('进程号为%s' % self.SSH_AGENT_PID)
 
     def kill_ssh_agent_linux(self):
         # self.win_get_ssh_env()
         print('杀死Linux下 SSH Agent进程')
-        print('进程号为%s'%self.SSH_AGENT_PID)
+        print('进程号为%s' % self.SSH_AGENT_PID)
 
     def test(self):
         self.json_handle()
-        print(self.SSH_AGENT_PID,self.SSH_AUTH_SOCK)
+        print(self.SSH_AGENT_PID, self.SSH_AUTH_SOCK)
+
 
 class Git_module(object):
-    def __init__(self,push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name):
-        #本地系统环境部分
+    def __init__(self, push_root_dir, file_name, push_urs_dir, jenkins_output_path, repo_url, local_branch_name,
+                 commit_content, repo_name, remote_branch_name):
+        # 本地系统环境部分
         self.push_root_dir = push_root_dir
         self.file_name = file_name
         # self.push_usr_dir = os.path.join(push_root_dir,file_name)
-        self.push_usr_dir = '/Users/aqumik/Desktop/git_test/11/t4'
+        self.push_usr_dir = push_urs_dir
         self.jenkins_output_path = jenkins_output_path
 
-        #本地Git仓库部分
+        # 本地Git仓库部分
         self.repo_url = repo_url
         # self.branch_name = branch_name
         self.local_branch_name = local_branch_name
         self.commit_content = commit_content
         self.repo_name = repo_name
 
-        #远程仓库部分
+        # 远程仓库部分
         self.remote_branch_name = remote_branch_name
 
-        #实例化对象
+        # 实例化对象
         self.repo = None
 
-
-    #实例化对象
+    # 实例化对象
     # def git_method(self):
     #     self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
     #     print(self.repo)
     #     return self.repo
 
     def git_repo(self):
-        self.repo = git.Repo('/Users/aqumik/Desktop/git_test/11/t4')
+        self.repo = git.Repo(self.push_usr_dir)
         print(self.repo)
-    #切换工作分支模块
+
+    # 切换工作分支模块
     def checkout_branch(self):
         repo = self.repo
         local_branch_name = self.local_branch_name
         remote_fetch = repo.remotes.origin
         remote_fetch.fetch()
 
-        #会自动在本地创建新分支并于远程分支连接
+        # 会自动在本地创建新分支并于远程分支连接
         try:
             repo.git.checkout(local_branch_name)
             print('切换分支到%s' % local_branch_name)
@@ -149,11 +154,11 @@ class Git_module(object):
             repo.git.checkout(local_branch_name)
             print('..........当前设置的分支为新分支，远程仓库并不存在该分支，将会自动创建新分支推送到本地')
 
-    #切换工作根路径模块
+    # 切换工作根路径模块
     def change_work_path(self):
         os.chdir(self.push_root_dir)
 
-    #Hash模块
+    # Hash模块
     def hash(self):
         repo = self.repo
         local_branch_name = self.local_branch_name
@@ -161,7 +166,7 @@ class Git_module(object):
         remote_fetch = repo.remotes.origin
         # 切换分支到main，尝试fetch是针对单个分支还是全部分支？ --若使用fetch()会把全部远程分支更新，所以需要指定特定分支
         try:
-            #有可能存在一种可能,本地存在的分支，远程不存在，则需要同时把新的分支推送到远程仓库
+            # 有可能存在一种可能,本地存在的分支，远程不存在，则需要同时把新的分支推送到远程仓库
             remote_fetch.fetch(local_branch_name)
             local_commit_hash = repo.rev_parse(local_branch_name)
             remote_commit_hash_before = repo.rev_parse(remote_branch_name)
@@ -202,9 +207,8 @@ class Git_module(object):
             print('..........当前设置的分支为新分支，远程仓库并不存在该分支，将会自动创建新分支推送到远程仓库')
             pass
 
-
-    #检测文件存在情况情况（1、项目目录是否存在 2、本地Git仓库是否存在）
-    #设有返回值
+    # 检测文件存在情况情况（1、项目目录是否存在 2、本地Git仓库是否存在）
+    # 设有返回值
     def pro_file_is_exists(self):
         push_usr_dir = self.push_usr_dir
         if not os.path.exists(file_name):
@@ -233,7 +237,7 @@ class Git_module(object):
         print(os.getcwd())
         if pro_file_return == 3:
             print('推送目录不存在，将会从远程仓库进行拉取....')
-            Repo.clone_from(repo_url, push_usr_dir, branch=local_branch_name, progress=CloneProgress())
+            Repo.clone_from(repo_url, push_usr_dir, branch=local_branch_name)
 
         elif pro_file_return == 2:
             print("项目本地Git仓库已存在")
@@ -253,13 +257,11 @@ class Git_module(object):
             print('程序中止，git_init_action模块接收的返回值异常')
             sys.exit(1)
 
-    #jenkins编译出来的文件处理模块
-    #处理的内容：1、清空当前目录下所有文件    2、将 jenkins编译出的文件复制到 当前项目文件夹下
-    #jenkins获取到的workspace工作目录 /var/lib/jenkins/workspace/master-build   master-build为项目的名字
+    # jenkins编译出来的文件处理模块
+    # 处理的内容：1、清空当前目录下所有文件    2、将 jenkins编译出的文件复制到 当前项目文件夹下
+    # jenkins获取到的workspace工作目录 /var/lib/jenkins/workspace/master-build   master-build为项目的名字
 
-
-
-    #文件处理，从jenkins编译出的文件复制
+    # 文件处理，从jenkins编译出的文件复制
     """
         注意点：
                 1、jenkins目录下隐藏文件不复制，因为jenkins工作目录可能存在某些如svn git隐藏文件，没必要复制到指定文件
@@ -267,6 +269,7 @@ class Git_module(object):
                 3、路径粒度为 项目名字，比如Jenkins路径为：/Users/aqumik/Desktop/git_test/jenkins_output/project1，则 project1为最细的粒度
                 4、路径问题
     """
+
     def jenkins_to_push_dir(self):
         # print('hi')
         # test1 = '/Users/aqumik/Desktop/git_test/jenkins_output/project1/1'
@@ -324,24 +327,33 @@ class Git_module(object):
         # 是否只推送当前分支？ 是
         # origin = repo.remote(name=repo_name)
         # origin.push()
-        repo.git.push(self.repo_name,self.local_branch_name)
+        repo.git.push(self.repo_name, self.local_branch_name)
+
 
 if __name__ == '__main__':
-    push_root_dir = '/Users/aqumik/Desktop/git_test/11'
-    file_name = 't4'
-    jenkins_output_path = '/Users/aqumik/Desktop/git_test/jenkins_output/project1'
+    # push_root_dir = '/Users/aqumik/Desktop/git_test/11'
+    jenkins_output_path = r'F:\test\jenkins_out'
+
+    file_name = r't4'
+    # jenkins_output_path = '/Users/aqumik/Desktop/git_test/jenkins_output/project1'
+    push_root_dir = r'F:\test\pro_root'
+
     repo_url = 'git@gitee.com:chetimberk/jenkins-test1.git'
-    local_branch_name = 'test4'
+    local_branch_name = 'test10'
     commit_content = 'hahahahahahahahah'
     repo_name = 'origin'
     remote_branch_name = local_branch_name
+    push_usr_dir = r'F:\test\pro_root\t4'
+
+    print(push_usr_dir)
     # g = Git_module(push_root_dir,file_name,jenkins_output_path,repo_url,local_branch_name,commit_content,repo_name,remote_branch_name)
     # try:
     sys_env = Os_env()
-    git_u = Git_module(push_root_dir, file_name, jenkins_output_path, repo_url, local_branch_name, commit_content,repo_name, remote_branch_name)
+    git_u = Git_module(push_root_dir, file_name, push_usr_dir, jenkins_output_path, repo_url, local_branch_name,
+                       commit_content, repo_name, remote_branch_name)
 
     #
-    # sys_env.win_get_ssh_env()
+    sys_env.win_get_ssh_env()
     # 到这一步，环境变量已经设置好
     sys_env.change_sys_env()
 
@@ -351,7 +363,7 @@ if __name__ == '__main__':
 
     git_u.change_work_path()
     git_u.git_init_action()
-    #实例化Repo
+    # 实例化Repo
     git_u.git_repo()
     git_u.checkout_branch()
     git_u.hash()
@@ -361,11 +373,6 @@ if __name__ == '__main__':
     git_u.jenkins_to_push_dir()
     git_u.push_action_module()
 
-
-
     # except Exception as e:
     #     sys_env = Os_env()
     #     sys_env.kill_ssh_agent_win()
-
-
-
