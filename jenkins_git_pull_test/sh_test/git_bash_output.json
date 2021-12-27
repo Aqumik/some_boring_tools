@@ -1,7 +1,0 @@
-{
-	"win_ssh_env":
-		{
-			"SSH_AUTH_SOCK":"/var/folders/f9/vgqgcqy92vb6d_njsxgm5sz80000gn/T//ssh-YZcY8WFst6j7/agent.4183",
-			"SSH_AGENT_PID":"4184"}
-
-}
