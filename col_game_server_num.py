@@ -8,8 +8,9 @@ def weight_cal():
     ser_created_times = []
     for i in range(len(max_cpu)):
         avr = round(max_cpu[i] / sum(max_cpu),2)
-        ser_created_times.append(round(avr * 500))
+        ser_created_times.append(round(avr))
         # print(ser_created_times)
+    print(ser_created_times)
     return ser_created_times
 
 def socket1(server_name,num):
@@ -41,13 +42,13 @@ if __name__ == "__main__":
     weight_cal()
     weight_cal_return_list = weight_cal()
 
-    for i in range(1,len(weight_cal_return_list)+1):
-        server_name = 'socket-server' + str(i)
-        t = Thread(target=socket1,args=(server_name,weight_cal_return_list[i-1],))
-        t.start()
-        time.sleep(0.01)
-        threads.append(t)
-    for t in threads:
-        t.join()
+    # for i in range(1,len(weight_cal_return_list)+1):
+    #     server_name = 'socket-server' + str(i)
+    #     t = Thread(target=socket1,args=(server_name,weight_cal_return_list[i-1],))
+    #     t.start()
+    #     time.sleep(0.01)
+    #     threads.append(t)
+    # for t in threads:
+    #     t.join()
 
     print('次数列表：%s\n 创服总数：%s'%(weight_cal_return_list,sum(weight_cal_return_list)))

@@ -62,7 +62,7 @@ def excel_date():
 def echo_100():
     list1 = []
     list2 = []
-    list3 = list(range(10501,10551))
+    list3 = list(range(501,601))
     for i in list3:
         list1.append(i)
     for x in list1:
@@ -72,7 +72,7 @@ def echo_100():
 def echo_jiou():
     list1 = []
     list2 = []
-    list3 = list(range(801,851))
+    list3 = list(range(1601,2001))
     for i in list3:
         if (i % 2) == 0:
             list1.append(i)
@@ -88,4 +88,4 @@ def echo_jiou():
 if __name__ == "__main__":
 
     print('-----------')
-    echo_jiou()
+    echo_100()
