@@ -3,12 +3,12 @@ import logging.handlers
 import time
 
 
-mailhost = ('mail.system.cocococo.com',25)
+mailhost = ('mail.system.cokutau.com',25)
 print(type(mailhost))
-fromaddr = 'aqumik@system.cocococo.com'
-toaddrs = ['1@cocococo.com']
+fromaddr = 'git@system.cokutau.com'
+toaddrs = ['duweizhi@cokutau.com']
 subject = '【Jenkins】推送项目失败'
-credentials = ('aqumik@system.cocococo.com','aqumik')
+credentials = ('aqumik@system.cokutau.com','aqumik')
 smtp_handler = logging.handlers.SMTPHandler(mailhost=mailhost,fromaddr=fromaddr,toaddrs=toaddrs,subject=subject,credentials=credentials)
 # smtp_handler = logging.handlers.SMTPHandler(mailhost=("smtp.example.com",25),fromaddr="from@example.com",toaddrs="to@example.com",subject=u"AppName error!")
 

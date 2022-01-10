@@ -48,15 +48,36 @@ class gitlab_operate(object):
             print(p.name,p.id)
             self.login.projects.delete(p.id)
 
+    # 创建分支
+    def create_branch(self,pro_id,branch_name):
+        projects = self.login.projects.get(pro_id)
+        projects.branches.list()
+        try:
+            projects.branches.create({'branch': branch_name,'ref': 'master'})
+        except:
+            pass
+        print(projects.branches.list())
 if __name__ == '__main__':
     api_token = 'Bkvrz14zEv4cy4S79zAY'
     url = 'http://10.10.16.94/'
+    # url = 'https://git.shops.netease.com/'
+    # api_token = 'W7Xeoi24S6Yvz4w-oA5p'
     g = gitlab_operate(api_toekn=api_token,url=url)
-    g.list_all_group()
+    # g.list_all_group()
     print('-------')
     g.list_all_pro()
+
     # pro_list = ["PJC3_Mainserver","PJC3_Versionweb","PJC3_Statjob","PJC3_SQL","PJC3_Sdkserver","PJC3_Mainjob","PJC3_Loginserver","PJC3_Gmweb","PJC3_Gmsitev2","PJC3_Gmsite","PJC3_Globalcommonserver","PJC3_Battleserver"]
-    g.create_group()
+
+    # branch_list = ["cubickill-stage"]
+    # project_id = [183,177,148,144,143,142,141,140,139,138,137,136]
+
+    # for id in project_id:
+    #     print(id)
+    #     for i in branch_list:
+    #         g.create_branch(pro_id=id,branch_name=i)
+
+    # g.create_group()
     # g.delete_all_pro()
     # print(len(pro_list))
     # for i in pro_list:
