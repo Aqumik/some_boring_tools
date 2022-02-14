@@ -11,7 +11,8 @@ def md5sum(file_name):
         while chunk:
             hash_file.update(chunk)
             chunk = f.read(8192)
-    print(hash_file.hexdigest())
+    return hash_file.hexdigest()
 
-f1 = '/Users/aqumik/Downloads/Windows10_InsiderPreview_Client_ARM64_en-us_21354.zip'
-md5sum(f1)
+f1 = '/Users/aqumik/Desktop/git_test/TD/gitlab/cubickill-prod/cubickill-sql/pjtd-sql.zip'
+a = md5sum(f1)
+print(a)

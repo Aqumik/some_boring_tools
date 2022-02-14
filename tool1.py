@@ -50,7 +50,7 @@ def test2():
 
 
 def excel_date():
-    # print('2021-6-3  18:00:00')
+    # print('2021-6-3.py  18:00:00')
     for i in range(1,32):
         print('2021-10-%i  10:00:00'%(i))
         print('2021-10-%i  18:00:00' % (i))
