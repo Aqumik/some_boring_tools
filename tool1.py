@@ -62,7 +62,7 @@ def excel_date():
 def echo_100():
     list1 = []
     list2 = []
-    list3 = list(range(501,601))
+    list3 = list(range(601,901))
     for i in list3:
         list1.append(i)
     for x in list1:
