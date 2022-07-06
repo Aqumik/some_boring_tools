@@ -35,4 +35,4 @@ def ssh(ip, port, username, password, cmd):
 
 
 if __name__ == '__main__':
-    ssh('10.10.16.80',22,'root','linux,123','python3 /opt/TD_test/gitlab/thread_unzip_v2.py -b "cubickill-en-prod" -p "\\10.10.10.118\publish\pjtd\cubickill-stage\\20220221144800"')
+    ssh('10.10.16.80',22,'root','linuxlskadjlfkajdlfj','python3 /opt/TD_test/gitlab/thread_unzip_v2.py -b "c-en-prod" -p "\\10.10.10.118\publish\pjtd\c-stage\\20220221144800"')
