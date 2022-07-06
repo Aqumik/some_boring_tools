@@ -61,7 +61,7 @@ if __name__ == '__main__':
     api_token = 'Bkvrz14zEv4cy4S79zAY'
     url = 'http://10.10.16.94/'
     # url = 'https://git.shops.netease.com/'
-    # api_token = 'W7Xeoi24S6Yvz4w-oA5p'
+    
     g = gitlab_operate(api_toekn=api_token,url=url)
     # g.list_all_group()
     print('-------')
