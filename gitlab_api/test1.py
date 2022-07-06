@@ -69,7 +69,7 @@ if __name__ == '__main__':
 
     # pro_list = ["PJC3_Mainserver","PJC3_Versionweb","PJC3_Statjob","PJC3_SQL","PJC3_Sdkserver","PJC3_Mainjob","PJC3_Loginserver","PJC3_Gmweb","PJC3_Gmsitev2","PJC3_Gmsite","PJC3_Globalcommonserver","PJC3_Battleserver"]
 
-    # branch_list = ["cubickill-stage"]
+    
     # project_id = [183,177,148,144,143,142,141,140,139,138,137,136]
 
     # for id in project_id:
